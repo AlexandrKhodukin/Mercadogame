@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои объявления - MercadoGame</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        /* Специфичные стили для страницы "Мои объявления" */
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Группировка по играм */
+        .game-group {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .game-group:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .game-group-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            
+            gap: 10px;
+        }
+
+        .game-group-title-icon {
+            font-size: 20px;
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .listing-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #ff6b35;
+        }
+
+        .listing-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .listing-card-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-height: 1.5;
+        }
+
+        .listing-card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            
+            
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto;
+        }
+
+        .listing-card-price-date {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .listing-card-price {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .listing-card-date {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 8px;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            min-width: 0;
+            white-space: nowrap;
+            box-sizing: border-box;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background: transparent;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+            box-sizing: border-box;
+        }
+
+        .btn-edit:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            box-sizing: border-box;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Пустое состояние и загрузка */
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+        }
+
+        .modal h2 {
+            margin-bottom: 25px;
+            color: #1f2937;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #f7f8fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #1f2937;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: #10b981;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+        }
+
+        .btn-save:hover {
+            background: #059669;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #6b7280;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+        }
+
+        .btn-cancel:hover {
+            background: #4b5563;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 24px;
+            }
+
+            .modal-content {
+                padding: 25px 20px;
+                max-width: 100%;
+            }
+
+            .modal h2 {
+                font-size: 20px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .btn-save,
+            .btn-cancel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MercadoGame" class="logo-image">
+                <span class="logo-text">Mercado<span>Game</span></span>
+            </a>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="header-search-input"
+                    placeholder="Поиск по играм и объявлениям..."
+                    data-i18n-placeholder="search_placeholder"
+                    id="header-search"
+                >
+            </div>
+            <div id="auth-buttons" class="auth-buttons">
+                <!-- Будет заполнено через JavaScript -->
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="section-title" data-i18n="my_listings_title">Мои объявления</h1>
+        <p class="section-subtitle" data-i18n="manage_listings">Управление вашими объявлениями</p>
+
+        <div id="listings">
+            <div class="loading">Загрузка...</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <h2 data-i18n="edit_listing_title">Редактировать объявление</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id">
+
+                <div class="form-group">
+                    <label data-i18n="game">Игра</label>
+                    <select id="edit-game" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="category">Категория</label>
+                    <select id="edit-category" required>
+                        <option value="account" data-i18n="cat_account">🎮 Аккаунт</option>
+                        <option value="currency" data-i18n="cat_currency">💰 Валюта</option>
+                        <option value="service" data-i18n="cat_service">🛠️ Услуга</option>
+                        <option value="other" data-i18n="cat_other">📦 Другое</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="server">Сервер</label>
+                    <select id="edit-server" required>
+                        <option value="" data-i18n="select_server_placeholder">Выберите сервер...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="title">Название</label>
+                    <input type="text" id="edit-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="description">Описание</label>
+                    <textarea id="edit-description" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="price_label">Цена (₽)</label>
+                    <input type="number" id="edit-price" required min="0.01" step="0.01">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-save" data-i18n="save">Сохранить</button>
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()" data-i18n="cancel">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/pages/my-listings-page.js"></script>
+</body>
+</html>

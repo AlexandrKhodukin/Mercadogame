@@ -1,0 +1,7 @@
+
+    /* Скрываем фон на определенных страницах в мобильной версии */
+    body.listing-detail-page .background-image,
+    body.profile-page .background-image,
+    body.create-listing-page .background-image {
+        display: none;
+    }

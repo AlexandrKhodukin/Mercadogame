@@ -1,0 +1,439 @@
+/**
+ * Модуль страницы объявлений (listings.html)
+ * Отвечает за загрузку, фильтрацию и отображение объявлений
+ */
+
+// Инициализация параметров страницы
+const urlParams = new URLSearchParams(window.location.search);
+const gameId = urlParams.get('game');
+const categoryParam = urlParams.get('category');
+
+// Глобальное состояние страницы
+window.allListingsData = [];
+let currentCategory = 'all';
+let currentServer = 'all';
+let priceSortOrder = null; // null, 'asc', 'desc'
+
+// Конфигурация кнопки "Продать" для разных категорий
+const sellButtonConfig = {
+    'all': {
+        textKey: 'sell',
+        icon: '💰'
+    },
+    'account': {
+        textKey: 'sell_accounts',
+        icon: '🎮'
+    },
+    'currency': {
+        textKey: 'sell_currency',
+        icon: '💰'
+    },
+    'service': {
+        textKey: 'sell_services',
+        icon: '🔧'
+    },
+    'other': {
+        textKey: 'sell_other',
+        icon: '📦'
+    }
+};
+
+/**
+ * Заполняет список серверов для фильтрации
+ */
+async function populateServerFilter() {
+    const serverSelect = document.getElementById('server-filter');
+    serverSelect.innerHTML = `<option value="all">${t('server')}</option>`;
+
+    if (!gameId) {
+        return; // Если нет выбранной игры, показываем только перевод "Сервер"
+    }
+
+    try {
+        const servers = await API.getGameServers(gameId);
+
+        servers.forEach(server => {
+            const option = document.createElement('option');
+            option.value = server.id;
+            option.textContent = server.name;
+            serverSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Ошибка загрузки серверов:', error);
+    }
+}
+
+/**
+ * Фильтрует объявления по выбранному серверу
+ */
+function filterByServer() {
+    currentServer = document.getElementById('server-filter').value;
+    const searchText = document.getElementById('header-search').value;
+    filterListingsWithCategory(searchText);
+}
+
+/**
+ * Получает имя сервера для объявления
+ */
+function getServerName(listing) {
+    return listing.server_name || 'Без сервера';
+}
+
+/**
+ * Обновляет текст и ссылку кнопки "Продать" в зависимости от текущей категории
+ */
+function updateSellButton() {
+    const sellBtn = document.getElementById('sell-btn');
+    const sellBtnIcon = sellBtn.querySelector('.sell-btn-icon');
+    const sellBtnText = sellBtn.querySelector('.sell-btn-text');
+
+    // Определяем конфигурацию кнопки
+    const config = sellButtonConfig[currentCategory] || sellButtonConfig['all'];
+
+    // Обновляем текст и иконку
+    sellBtnIcon.textContent = config.icon;
+    sellBtnText.textContent = t(config.textKey);
+
+    // Формируем URL для создания объявления
+    let url = 'create-listing.html';
+    const params = [];
+
+    if (gameId) {
+        params.push(`game=${gameId}`);
+    }
+
+    if (currentCategory && currentCategory !== 'all') {
+        params.push(`category=${currentCategory}`);
+    }
+
+    if (params.length > 0) {
+        url += '?' + params.join('&');
+    }
+
+    sellBtn.href = url;
+}
+
+/**
+ * Фильтрует объявления по категории
+ */
+function filterByCategory(category) {
+    currentCategory = category;
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.getElementById(`filter-${category}`).classList.add('active');
+
+    const searchText = document.getElementById('header-search').value;
+    filterListingsWithCategory(searchText);
+
+    // Обновляем кнопку "Продать"
+    updateSellButton();
+}
+
+/**
+ * Переключает порядок сортировки по цене
+ */
+function togglePriceSort() {
+    // Переключение порядка сортировки: null -> asc -> desc -> null
+    if (priceSortOrder === null) {
+        priceSortOrder = 'asc';
+    } else if (priceSortOrder === 'asc') {
+        priceSortOrder = 'desc';
+    } else {
+        priceSortOrder = null;
+    }
+
+    // Обновляем иконку
+    const sortIcon = document.getElementById('sort-icon');
+    if (priceSortOrder === 'asc') {
+        sortIcon.textContent = '▲';
+        sortIcon.style.opacity = '1';
+    } else if (priceSortOrder === 'desc') {
+        sortIcon.textContent = '▼';
+        sortIcon.style.opacity = '1';
+    } else {
+        sortIcon.textContent = '▼';
+        sortIcon.style.opacity = '0.3';
+    }
+
+    // Применяем фильтрацию с сортировкой
+    const searchText = document.getElementById('header-search').value;
+    filterListingsWithCategory(searchText);
+}
+
+/**
+ * Получает URL профиля продавца (с учетом текущего пользователя)
+ */
+function getSellerProfileUrl(sellerId) {
+    const currentUser = getUser();
+    if (currentUser && currentUser.id === sellerId) {
+        return 'my-listings.html';
+    }
+    return `seller-profile.html?id=${sellerId}`;
+}
+
+/**
+ * Генерирует HTML для аватара продавца
+ * @param {string|null} avatarUrl - URL аватара или null
+ * @param {string} className - CSS класс для аватара
+ * @returns {string} HTML для аватара
+ */
+function getSellerAvatarHtml(avatarUrl, className = "seller-avatar") {
+    if (avatarUrl) {
+        return `<div class="${className}"><img src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>`;
+    }
+    return `<div class="${className}">👤</div>`;
+}
+
+/**
+ * Фильтрует и отображает объявления с учетом всех фильтров и поиска
+ */
+window.filterListingsWithCategory = function(searchText) {
+    const container = document.getElementById('listings');
+    container.innerHTML = '';
+
+    let filtered = window.allListingsData;
+
+    if (currentCategory !== 'all') {
+        filtered = filtered.filter(listing => listing.category === currentCategory);
+    }
+
+    if (currentServer !== 'all') {
+        filtered = filtered.filter(listing => listing.server == currentServer);
+    }
+
+    if (searchText) {
+        filtered = filtered.filter(listing =>
+            listing.title.toLowerCase().includes(searchText.toLowerCase()) ||
+            listing.description.toLowerCase().includes(searchText.toLowerCase()) ||
+            listing.seller_name.toLowerCase().includes(searchText.toLowerCase())
+        );
+    }
+
+    // Применяем сортировку по цене, если включена
+    if (priceSortOrder === 'asc') {
+        filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (priceSortOrder === 'desc') {
+        filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+    }
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">🔍</div>
+                <div data-i18n="no_listings">Ничего не найдено</div>
+            </div>
+        `;
+        if (typeof updateTranslations === 'function') {
+            updateTranslations();
+        }
+        document.getElementById('listings-header').style.display = 'none';
+        return;
+    }
+
+    // Показываем шапку таблицы
+    document.getElementById('listings-header').style.display = 'grid';
+
+    filtered.forEach(listing => {
+        const categoryName = getCategoryName(listing.category);
+        const sellerProfileUrl = getSellerProfileUrl(listing.seller);
+        const isMobile = window.innerWidth <= 768;
+
+        const card = document.createElement('div');
+        card.className = 'listing-card';
+        card.style.cursor = 'pointer';
+
+        if (isMobile) {
+            // Мобильная версия - структура как на FunPay
+            card.innerHTML = `
+                <div class="mobile-content">
+                    <div class="mobile-server">${getServerName(listing)}</div>
+                    <div class="mobile-title">${listing.title}</div>
+                    <div class="mobile-description">${listing.description}</div>
+                    <a href="${sellerProfileUrl}" class="mobile-seller" onclick="event.stopPropagation();">
+                        ${getSellerAvatarHtml(listing.seller_avatar, "mobile-avatar")}
+                        <span class="mobile-seller-name">${listing.seller_name}</span>
+                    </a>
+                </div>
+                <div class="mobile-price">₽${parseFloat(listing.price).toFixed(2)}</div>
+            `;
+        } else {
+            // Десктопная версия - оригинальная структура
+            card.innerHTML = `
+                <div class="listing-server">
+                    ${getServerName(listing)}
+                </div>
+                <div class="listing-info">
+                    <h3 class="listing-title">${listing.title}</h3>
+                    <div class="listing-category-badge">${categoryName}</div>
+                </div>
+                <p class="listing-description">${listing.description}</p>
+                <a href="${sellerProfileUrl}" class="listing-seller-section" onclick="event.stopPropagation();">
+                    ${getSellerAvatarHtml(listing.seller_avatar)}
+                    <span class="listing-seller-name">${listing.seller_name}</span>
+                </a>
+                <div class="listing-price-section">
+                    <div class="listing-price">₽ ${parseFloat(listing.price).toFixed(2)}</div>
+                </div>
+            `;
+        }
+
+        // Добавляем переход на страницу объявления при клике
+        card.addEventListener('click', () => {
+            window.location.href = `listing-detail.html?id=${listing.id}`;
+        });
+
+        container.appendChild(card);
+    });
+}
+
+/**
+ * Загружает и отображает информацию об игре
+ */
+async function loadGameInfo() {
+    const gameInfoSection = document.getElementById('game-info');
+
+    if (!gameId) {
+        gameInfoSection.style.display = 'none';
+        return;
+    }
+
+    try {
+        const games = await API.getGames();
+        const game = games.find(g => g.id == gameId);
+
+        if (game) {
+            // Используем описание из базы данных, если оно есть
+            // Иначе используем дефолтное описание
+            const description = game.description ||
+                "Популярная игра с большим игровым сообществом. Присоединяйтесь к миллионам игроков по всему миру и наслаждайтесь захватывающим геймплеем.";
+
+            gameInfoSection.innerHTML = `
+                <div class="game-info-title">${game.name}</div>
+                <div class="game-info-description">${description}</div>
+            `;
+        } else {
+            gameInfoSection.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки информации об игре:', error);
+        gameInfoSection.style.display = 'none';
+    }
+}
+
+/**
+ * Загружает объявления с сервера
+ */
+async function loadListings() {
+    try {
+        const allListings = await API.getListings();
+
+        // Если gameId указан, фильтруем по игре, иначе показываем все объявления
+        let listings;
+        if (gameId) {
+            listings = allListings.filter(listing =>
+                listing.game == gameId
+            );
+        } else {
+            // Показываем все объявления
+            listings = allListings;
+        }
+
+        window.allListingsData = listings;
+
+        if (listings.length === 0) {
+            document.getElementById('listings').innerHTML = `
+                <div class="empty">
+                    <div class="empty-icon">📦</div>
+                    <div>Нет объявлений</div>
+                </div>
+            `;
+            return;
+        }
+
+        // Если в URL есть категория, автоматически применяем фильтр
+        if (categoryParam) {
+            currentCategory = categoryParam;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const filterBtn = document.getElementById(`filter-${categoryParam}`);
+            if (filterBtn) {
+                filterBtn.classList.add('active');
+            }
+        }
+
+        filterListingsWithCategory('');
+
+    } catch (error) {
+        console.error('Ошибка:', error);
+        document.getElementById('listings').innerHTML = `
+            <div class="empty">
+                <div class="empty-icon">⚠️</div>
+                <div>Ошибка при загрузке объявлений</div>
+            </div>
+        `;
+    }
+}
+
+/**
+ * Инициализация страницы
+ */
+function initPage() {
+    // Проверка авторизации для отображения кнопок в шапке
+    checkAuth();
+
+    // Устанавливаем текущую категорию из URL, если указана
+    if (categoryParam) {
+        currentCategory = categoryParam;
+    }
+
+    // Заполняем список серверов
+    populateServerFilter();
+
+    // Загружаем информацию об игре и объявления
+    loadGameInfo();
+    loadListings();
+
+    // Обработчик смены языка для обновления динамического контента
+    window.onLanguageChange = function(lang) {
+        // Обновляем список серверов с новым переводом
+        populateServerFilter();
+        // Обновляем кнопку "Продать"
+        updateSellButton();
+    };
+
+    // Обновляем кнопку "Продать" при загрузке страницы
+    updateSellButton();
+
+    // Перерисовываем карточки при изменении размера окна
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            const searchText = document.getElementById('header-search').value;
+            filterListingsWithCategory(searchText);
+        }, 250);
+    });
+}
+
+// Экспортируем функции для использования в HTML (через namespace)
+window.ListingsPage = {
+    filterByCategory,
+    filterByServer,
+    togglePriceSort,
+    init: initPage
+};
+
+// Экспортируем функции глобально для совместимости с onclick в HTML
+window.filterByCategory = filterByCategory;
+window.filterByServer = filterByServer;
+window.togglePriceSort = togglePriceSort;
+
+// Автоматическая инициализация при загрузке DOM
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+} else {
+    initPage();
+}

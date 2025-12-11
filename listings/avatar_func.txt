@@ -1,0 +1,6 @@
+def avatar_upload_path(instance, filename):
+    """Генерирует путь для сохранения аватара с уникальным именем: avatars/user_<id>/avatar_<timestamp>.<ext>"""
+    ext = filename.split('.')[-1]
+    timestamp = int(time.time())
+    filename = f'avatar_{timestamp}.{ext}'
+    return os.path.join('avatars', f'user_{instance.user.id}', filename)

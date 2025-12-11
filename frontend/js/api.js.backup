@@ -1,0 +1,193 @@
+// Конфигурация API
+const API_URL = 'http://localhost:8000/api';
+
+/**
+ * Обработчик ошибок API
+ * @param {Error} error - Объект ошибки
+ * @param {string} operation - Название операции
+ */
+function handleAPIError(error, operation) {
+    console.error(`Ошибка при ${operation}:`, error);
+    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+        throw new Error('Ошибка соединения с сервером. Проверьте подключение к интернету.');
+    }
+    throw error;
+}
+
+/**
+ * Проверяет статус ответа и выбрасывает ошибку если не ОК
+ * @param {Response} response - Объект ответа fetch
+ */
+async function checkResponse(response) {
+    if (!response.ok) {
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorData.detail || errorMessage;
+        } catch (e) {
+            // Не удалось распарсить JSON ошибки
+        }
+        throw new Error(errorMessage);
+    }
+    return response;
+}
+
+// API функции
+const API = {
+    // Получить все игры
+    async getGames() {
+        try {
+            const response = await fetch(`${API_URL}/games/`);
+            await checkResponse(response);
+            return await response.json();
+        } catch (error) {
+            handleAPIError(error, 'получении списка игр');
+        }
+    },
+
+    // Получить серверы игры
+    async getGameServers(gameId) {
+        const response = await fetch(`${API_URL}/games/${gameId}/servers/`);
+        return await response.json();
+    },
+
+    // Получить все объявления
+    async getListings() {
+        const response = await fetch(`${API_URL}/listings/`);
+        return await response.json();
+    },
+
+    // Получить мои объявления
+    async getMyListings(token) {
+        const response = await fetch(`${API_URL}/listings/my_listings/`, {
+            headers: { 'Authorization': `Token ${token}` }
+        });
+        return await response.json();
+    },
+
+    // Создать объявление
+    async createListing(data, token) {
+        const response = await fetch(`${API_URL}/listings/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+        return { response, data: await response.json() };
+    },
+
+    // Обновить объявление
+    async updateListing(id, data, token) {
+        const response = await fetch(`${API_URL}/listings/${id}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify(data)
+        });
+        return { response, data: await response.json() };
+    },
+
+    // Удалить объявление
+    async deleteListing(id, token) {
+        const response = await fetch(`${API_URL}/listings/${id}/`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Token ${token}` }
+        });
+        return response;
+    },
+
+    // Вход
+    async login(username, password) {
+        const response = await fetch(`${API_URL}/login/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        return { response, data: await response.json() };
+    },
+
+    // Регистрация
+    async register(username, email, password) {
+        const response = await fetch(`${API_URL}/register/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password })
+        });
+        return { response, data: await response.json() };
+    },
+
+    // Получить профиль продавца
+    async getSellerProfile(userId) {
+        const response = await fetch(`${API_URL}/seller/${userId}/`);
+        return await response.json();
+    },
+
+    // Получить список диалогов
+    async getConversations(token) {
+        const response = await fetch(`${API_URL}/conversations/`, {
+            headers: { 'Authorization': `Token ${token}` }
+        });
+        return await response.json();
+    },
+
+    // Получить общее количество непрочитанных сообщений
+    async getUnreadCount(token) {
+        try {
+            const conversations = await this.getConversations(token);
+            return conversations.reduce((total, conv) => total + (conv.unread_count || 0), 0);
+        } catch (error) {
+            console.error('Ошибка получения непрочитанных сообщений:', error);
+            return 0;
+        }
+    },
+
+    // Получить диалог с сообщениями
+    async getConversation(id, token) {
+        const response = await fetch(`${API_URL}/conversations/${id}/`, {
+            headers: { 'Authorization': `Token ${token}` }
+        });
+        return await response.json();
+    },
+
+    // Начать диалог по объявлению
+    async startConversation(listingId, token) {
+        const response = await fetch(`${API_URL}/conversations/start_conversation/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({ listing_id: listingId })
+        });
+        return { response, data: await response.json() };
+    },
+
+    // Отметить сообщения как прочитанные
+    async markAsRead(conversationId, token) {
+        const response = await fetch(`${API_URL}/conversations/${conversationId}/mark_as_read/`, {
+            method: 'POST',
+            headers: { 'Authorization': `Token ${token}` }
+        });
+        return await response.json();
+    },
+
+    // Отправить сообщение
+    async sendMessage(conversationId, text, token) {
+        const response = await fetch(`${API_URL}/messages/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({ 
+                conversation: conversationId, 
+                text: text 
+            })
+        });
+        return { response, data: await response.json() };
+    }
+};

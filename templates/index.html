@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MercadoGame - Маркетплейс игровых аккаунтов</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        /* Специфичные стили для главной страницы */
+
+        /* Заголовок секции */
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        /* Сетка игр */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        /* Карточка игры */
+        .game-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #2563eb, #10b981);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .game-card:hover {
+            transform: translateY(-4px);
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .game-card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .game-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .game-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff6b35, #ff8555);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+        }
+
+        .game-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .game-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.3;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .game-stats {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .game-stats-value {
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        .game-tags {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        .game-tag {
+            background: #f7f8fa;
+            color: #6b7280;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .game-tag-icon {
+            font-size: 16px;
+        }
+
+        .game-tag:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Специфичные стили для каждой категории */
+        .game-tag[href*="category=account"] {
+            border-color: #d1fae5;
+        }
+
+        .game-tag[href*="category=account"]:hover {
+            background: #d1fae5;
+            color: #059669;
+            border-color: #10b981;
+        }
+
+        .game-tag[href*="category=service"] {
+            border-color: #dbeafe;
+        }
+
+        .game-tag[href*="category=service"]:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #2563eb;
+        }
+
+        .game-tag[href*="category=currency"] {
+            border-color: #fef3c7;
+        }
+
+        .game-tag[href*="category=currency"]:hover {
+            background: #fef3c7;
+            color: #d97706;
+            border-color: #f59e0b;
+        }
+
+        .game-tag[href*="category=other"] {
+            border-color: #f3e8ff;
+        }
+
+        .game-tag[href*="category=other"]:hover {
+            background: #f3e8ff;
+            color: #7c3aed;
+            border-color: #8b5cf6;
+        }
+
+        /* Адаптивность для карточек игр */
+        @media (max-width: 1024px) {
+            .games-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .game-tags {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .game-tag {
+                font-size: 10px;
+                padding: 6px 6px;
+            }
+
+            .game-tag-icon {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 26px;
+            }
+
+            .game-name {
+                font-size: 17px;
+            }
+
+            .game-stats {
+                font-size: 12px;
+            }
+
+            .game-tag {
+                font-size: 9px;
+                padding: 5px 6px;
+            }
+
+            .game-tag-icon {
+                font-size: 13px;
+            }
+        }
+
+        /* Пустой список */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MercadoGame" class="logo-image">
+                <span class="logo-text">Mercado<span>Game</span></span>
+            </a>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="header-search-input"
+                    placeholder="Поиск по играм и объявлениям..."
+                    data-i18n-placeholder="search_placeholder"
+                    id="header-search"
+                >
+            </div>
+            <div id="auth-buttons" class="auth-buttons">
+                <div class="loading" data-i18n="loading">Загрузка</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="section-header">
+            <h1 class="section-title" data-i18n="games_catalog">Каталог игр</h1>
+            <p class="section-subtitle" data-i18n="select_game">Выберите игру для просмотра объявлений</p>
+        </div>
+
+        <!-- Сетка игр -->
+        <div id="games" class="games-grid">
+            <div class="loading" data-i18n="loading_games">Загрузка игр</div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/search.js"></script>
+    <script>
+        window.allGames = [];
+        window.allListings = [];
+
+        // Загрузка игр и объявлений
+        async function loadGames() {
+            try {
+                // Загружаем игры и объявления параллельно
+                const [games, listings] = await Promise.all([
+                    API.getGames(),
+                    API.getListings()
+                ]);
+
+                window.allGames = games;
+                window.allListings = listings;
+
+                displayGames(games);
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('games').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div class="empty-text">Ошибка загрузки игр</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Подсчет объявлений для игры
+        function getListingsCountForGame(gameId) {
+            return window.allListings.filter(listing => listing.game == gameId).length;
+        }
+
+        // Отображение игр
+        window.displayGames = function(games) {
+            const container = document.getElementById('games');
+            container.innerHTML = '';
+
+            if (games.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🎮</div>
+                        <div class="empty-text">Игры не найдены</div>
+                    </div>
+                `;
+                return;
+            }
+
+            games.forEach(game => {
+                const initials = getInitials(game.name);
+                const listingsCount = getListingsCountForGame(game.id);
+
+                const card = document.createElement('div');
+                card.className = 'game-card';
+                card.innerHTML = `
+                    <div class="game-card-content">
+                        <div class="game-header">
+                            <div class="game-icon">${initials}</div>
+                            <div class="game-info">
+                                <div class="game-name">${game.name}</div>
+                                <div class="game-stats"><span class="game-stats-value">${listingsCount}</span> <span data-i18n="active_listings">активных объявлений</span></div>
+                            </div>
+                        </div>
+                        <div class="game-tags">
+                            <a href="listings.html?game=${game.id}&category=account" class="game-tag">
+                                <div class="game-tag-icon">🎮</div>
+                                <div data-i18n="cat_account">Аккаунты</div>
+                            </a>
+                            <a href="listings.html?game=${game.id}&category=currency" class="game-tag">
+                                <div class="game-tag-icon">💰</div>
+                                <div data-i18n="cat_currency">Валюта</div>
+                            </a>
+                            <a href="listings.html?game=${game.id}&category=service" class="game-tag">
+                                <div class="game-tag-icon">🔧</div>
+                                <div data-i18n="cat_service">Услуги</div>
+                            </a>
+                            <a href="listings.html?game=${game.id}&category=other" class="game-tag">
+                                <div class="game-tag-icon">📦</div>
+                                <div data-i18n="cat_other">Другое</div>
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                // Добавляем клик на всю карточку
+                card.addEventListener('click', (e) => {
+                    // Если клик был по тегу (категории), не перехватываем его
+                    if (e.target.classList.contains('game-tag')) {
+                        return;
+                    }
+                    // Переход на страницу объявлений со всеми категориями
+                    window.location.href = `listings.html?game=${game.id}`;
+                });
+
+                container.appendChild(card);
+            });
+
+            // Применяем переводы к динамически добавленным элементам
+            if (typeof updateTranslations === 'function') {
+                updateTranslations();
+            }
+        }
+
+        // Инициализация
+        checkAuth();
+        
+        // Ждём загрузки API перед вызовом loadGames
+        if (typeof API !== 'undefined') {
+            loadGames();
+        } else {
+            // Если API ещё не загружен, ждём
+            window.addEventListener('load', () => {
+                loadGames();
+            });
+        }
+    </script>
+</body>
+</html>

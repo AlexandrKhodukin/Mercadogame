@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Выход - MercadoFun{% endblock %}
+
+{% block content %}
+<h1>Выход из системы</h1>
+
+<p style="text-align: center; margin-bottom: 20px;">Вы уверены, что хотите выйти?</p>
+
+<form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn">Выйти</button>
+</form>
+
+<div class="text-center">
+    <p><a href="/">Вернуться на главную</a></p>
+</div>
+{% endblock %}

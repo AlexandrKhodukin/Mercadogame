@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль продавца - MercadoGame</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Профиль продавца */
+        .seller-profile-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .seller-profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #f7f8fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #ff6b35;
+            margin: 0 auto 20px;
+            border: 2px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .seller-profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .seller-profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .seller-profile-info {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .contact-seller-btn {
+            margin-top: 20px;
+            padding: 14px 32px;
+            background: #ffffff;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .contact-seller-btn:hover {
+            background: #fff5f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+
+        /* Секция объявлений */
+        .listings-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .game-group {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .game-group:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .game-group-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .game-group-title-icon {
+            font-size: 20px;
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .listing-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-color: #ff6b35;
+        }
+
+        .listing-card-game {
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .listing-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .listing-card-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            line-height: 1.5;
+        }
+
+        .listing-card-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto;
+        }
+
+        .listing-card-price-date {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .listing-card-price {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .listing-card-date {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #1d4ed8;
+            gap: 12px;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #fecaca;
+        }
+
+        .no-listings {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .seller-profile-card {
+                padding: 20px;
+            }
+
+            .listings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Шапка -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MercadoGame" class="logo-image">
+                <span class="logo-text">Mercado<span>Game</span></span>
+            </a>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="header-search-input"
+                    placeholder="Поиск по играм и объявлениям..."
+                    data-i18n-placeholder="search_placeholder"
+                    id="header-search"
+                >
+            </div>
+            <div id="auth-buttons" class="auth-buttons">
+                <!-- Будет заполнено через JavaScript -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Фоновое изображение -->
+    <div class="background-image"></div>
+
+    <!-- Контент -->
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">
+            ← <span data-i18n="back_link">Назад</span>
+        </a>
+
+        <div id="content">
+            <div class="loading-container">
+                <div class="loading" data-i18n="loading">Загрузка</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Получаем ID продавца из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sellerId = urlParams.get('id');
+
+        if (!sellerId) {
+            document.getElementById('content').innerHTML = `
+                <div class="error-message">
+                    <h2 data-i18n="error">Ошибка</h2>
+                    <p data-i18n="seller_id_missing">ID продавца не указан</p>
+                </div>
+            `;
+            if (typeof updateTranslations === 'function') {
+                updateTranslations();
+            }
+        } else {
+            loadSellerProfile();
+        }
+
+        async function loadSellerProfile() {
+            try {
+                const data = await API.getSellerProfile(sellerId);
+
+                if (!data.user) {
+                    document.getElementById('content').innerHTML = `
+                        <div class="error-message">
+                            <h2 data-i18n="seller_not_found">Продавец не найден</h2>
+                            <p data-i18n="seller_not_found_text">Пользователь с ID ${sellerId} не существует</p>
+                        </div>
+                    `;
+                    if (typeof updateTranslations === 'function') {
+                        updateTranslations();
+                    }
+                    return;
+                }
+
+                displaySellerProfile(data);
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="error-message">
+                        <h2 data-i18n="loading_error">Ошибка загрузки</h2>
+                        <p data-i18n="profile_load_error">Не удалось загрузить данные профиля продавца</p>
+                    </div>
+                `;
+                if (typeof updateTranslations === 'function') {
+                    updateTranslations();
+                }
+            }
+        }
+
+        function displaySellerProfile(data) {
+            const { user, listings } = data;
+            const joinedDate = new Date(user.date_joined).toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            let listingsHTML = '';
+            if (listings && listings.length > 0) {
+                // Группируем объявления по играм
+                const listingsByGame = {};
+                listings.forEach(listing => {
+                    if (!listingsByGame[listing.game_name]) {
+                        listingsByGame[listing.game_name] = [];
+                    }
+                    listingsByGame[listing.game_name].push(listing);
+                });
+
+                // Создаем HTML для каждой группы игр
+                listingsHTML = Object.keys(listingsByGame).map(gameName => {
+                    const gameListings = listingsByGame[gameName];
+                    const gameListingsHTML = gameListings.map(listing => {
+                        const createdDate = new Date(listing.created_at).toLocaleDateString('ru-RU', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+
+                        return `
+                            <a href="listing-detail.html?id=${listing.id}" class="listing-card">
+                                <div class="listing-card-title">${listing.title}</div>
+                                <div class="listing-card-description">${listing.description}</div>
+                                <div class="listing-card-footer">
+                                    <div class="listing-card-price-date">
+                                        <div class="listing-card-price">₽ ${parseFloat(listing.price).toFixed(2)}</div>
+                                        <div class="listing-card-date">${createdDate}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+
+                    return `
+                        <div class="game-group">
+                            <h3 class="game-group-title">
+                                ${gameName}
+                            </h3>
+                            <div class="listings-grid">
+                                ${gameListingsHTML}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                listingsHTML = `<div class="no-listings">${t('seller_no_listings')}</div>`;
+            }
+
+            const avatarContent = user.avatar
+                ? `<img src="${user.avatar}" alt="${user.username}">`
+                : '👤';
+
+            const content = `
+                <div class="seller-profile-card">
+                    <div class="seller-profile-avatar">${avatarContent}</div>
+                    <div class="seller-profile-name">${user.username}</div>
+                    <div class="seller-profile-info">${t('member_since')} ${joinedDate}</div>
+                    <div class="seller-profile-info">${listings.length} ${getListingsWord(listings.length)}</div>
+                    <button class="contact-seller-btn" onclick="contactSeller('${user.username}')">
+                        ${t('contact_seller')}
+                    </button>
+                </div>
+
+                <div class="listings-section">
+                    <h2 class="section-title">${t('seller_listings')}</h2>
+                    ${listingsHTML}
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = content;
+        }
+
+        function contactSeller(username) {
+            notify.info(t('contact_feature_coming_soon').replace('{username}', username));
+        }
+
+        function getListingsWord(count) {
+            const lang = getCurrentLanguage();
+
+            if (lang === 'pt-br') {
+                // Португальский: anúncio (1), anúncios (2+)
+                return count === 1 ? t('listing_singular') : t('listing_plural');
+            }
+
+            // Русский: объявление, объявления, объявлений
+            const lastDigit = count % 10;
+            const lastTwoDigits = count % 100;
+
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+                return t('listing_genitive_plural'); // объявлений
+            }
+
+            if (lastDigit === 1) {
+                return t('listing_nominative_singular'); // объявление
+            }
+
+            if (lastDigit >= 2 && lastDigit <= 4) {
+                return t('listing_genitive_singular'); // объявления
+            }
+
+            return t('listing_genitive_plural'); // объявлений
+        }
+
+        // Проверка авторизации для шапки
+        checkAuth();
+    </script>
+</body>
+</html>

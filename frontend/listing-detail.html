@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявление - MercadoGame</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        /* Специфичные стили для страницы объявления в стиле FunPay */
+
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Основная сетка: левая часть + правая часть */
+        .listing-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        /* ЛЕВАЯ ЧАСТЬ - Описание объявления */
+        .listing-content {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .listing-info-row {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .listing-info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        .info-value.large {
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .description-text {
+            white-space: pre-wrap;
+            line-height: 1.7;
+        }
+
+        /* ПРАВАЯ ЧАСТЬ - Карточка продавца */
+        .seller-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .seller-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .seller-profile-link {
+            display: block;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .seller-profile-link:hover .seller-avatar {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #cbd5e1;
+        }
+
+        .seller-profile-link:hover .seller-name {
+            color: #2563eb;
+        }
+
+        .seller-avatar {
+            width: 70px;
+            height: 70px;
+            background: #f7f8fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #ff6b35;
+            margin: 0 auto 15px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .seller-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .seller-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+
+        .seller-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .seller-price {
+            padding: 25px 20px;
+            background: #ffffff;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .price-label {
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .seller-actions {
+            padding: 20px;
+        }
+
+        .contact-btn {
+            width: 100%;
+            padding: 14px;
+            background: #ffffff;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .contact-btn:hover {
+            background: #fff5f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #1d4ed8;
+            gap: 12px;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #fecaca;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 968px) {
+            .listing-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .seller-card {
+                position: static;
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .listing-content,
+            .seller-card {
+                padding: 20px;
+            }
+
+            .price-amount {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body class="listing-detail-page">
+<!-- Шапка -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MercadoGame" class="logo-image">
+                <span class="logo-text">Mercado<span>Game</span></span>
+            </a>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="header-search-input"
+                    placeholder="Поиск по играм и объявлениям..."
+                    data-i18n-placeholder="search_placeholder"
+                    id="header-search"
+                >
+            </div>
+            <div id="auth-buttons" class="auth-buttons">
+                <!-- Будет заполнено через JavaScript -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Фоновое изображение -->
+    <div class="background-image"></div>
+
+    <!-- Контент -->
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">
+            ← <span data-i18n="back_to_listings">Назад к объявлениям</span>
+        </a>
+
+        <div id="content">
+            <div class="loading-container">
+                <div class="loading">Загрузка...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Получаем ID объявления из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const listingId = urlParams.get('id');
+
+        if (!listingId) {
+            document.getElementById('content').innerHTML = `
+                <div class="error-message">
+                    <h2>Ошибка</h2>
+                    <p>ID объявления не указан</p>
+                </div>
+            `;
+        } else {
+            loadListing();
+        }
+
+        async function loadListing() {
+            try {
+                const listings = await API.getListings();
+                const listing = listings.find(l => l.id == listingId);
+
+                if (!listing) {
+                    document.getElementById('content').innerHTML = `
+                        <div class="error-message">
+                            <h2>Объявление не найдено</h2>
+                            <p>Объявление с ID ${listingId} не существует или было удалено</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                displayListing(listing);
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                document.getElementById('content').innerHTML = `
+                    <div class="error-message">
+                        <h2>Ошибка загрузки</h2>
+                        <p>Не удалось загрузить данные объявления</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getSellerProfileUrl(sellerId) {
+            const currentUser = getUser();
+            if (currentUser && currentUser.id === sellerId) {
+                return 'my-listings.html';
+            }
+            return `seller-profile.html?id=${sellerId}`;
+        }
+
+        function displayListing(listing) {
+            const categoryName = getCategoryName(listing.category);
+            const createdDate = new Date(listing.created_at).toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const sellerProfileUrl = getSellerProfileUrl(listing.seller);
+            const sellerAvatarContent = listing.seller_avatar
+                ? `<img src="${listing.seller_avatar}" alt="${listing.seller_name}">`
+                : '👤';
+
+            const content = `
+                <div class="listing-layout">
+                    <!-- ЛЕВАЯ ЧАСТЬ - Описание объявления -->
+                    <div class="listing-content">
+                        <div class="listing-info-row">
+                            <div class="info-label" data-i18n="game">Игра</div>
+                            <div class="info-value large">${listing.game_name}</div>
+                        </div>
+
+                        ${listing.server_name ? `
+                        <div class="listing-info-row">
+                            <div class="info-label" data-i18n="server">Сервер</div>
+                            <div class="info-value large">${listing.server_name}</div>
+                        </div>
+                        ` : ''}
+
+                        <div class="listing-info-row">
+                            <div class="info-label" data-i18n="short_description">Краткое описание</div>
+                            <div class="info-value large">${listing.title}</div>
+                        </div>
+
+                        <div class="listing-info-row">
+                            <div class="info-label" data-i18n="full_description">Подробное описание</div>
+                            <div class="info-value large description-text">${listing.description}</div>
+                        </div>
+
+                        <div class="listing-info-row">
+                            <div class="info-label" data-i18n="published_date">Дата публикации</div>
+                            <div class="info-value large">${createdDate}</div>
+                        </div>
+                    </div>
+
+                    <!-- ПРАВАЯ ЧАСТЬ - Карточка продавца -->
+                    <div class="seller-card">
+                        <div class="seller-header">
+                            <a href="${sellerProfileUrl}" class="seller-profile-link">
+                                <div class="seller-avatar">${sellerAvatarContent}</div>
+                                <div class="seller-name">${listing.seller_name}</div>
+                            </a>
+                            <div class="seller-label" data-i18n="seller">Продавец</div>
+                        </div>
+
+                        <div class="seller-price">
+                            <div class="price-label" data-i18n="price">Цена</div>
+                            <div class="price-amount">₽ ${parseFloat(listing.price).toFixed(2)}</div>
+                        </div>
+
+                        <div class="seller-actions">
+                            <button class="contact-btn" onclick="contactSeller()">
+                                <span data-i18n="contact_seller">Написать продавцу</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = content;
+
+            // Применяем переводы к динамически добавленным элементам
+            if (typeof updateTranslations === 'function') {
+                updateTranslations();
+            }
+        }
+
+        async function contactSeller() {
+            const token = getToken();
+            const user = getUser();
+            
+            if (!token || !user) {
+                notify.error('Войдите в систему, чтобы связаться с продавцом');
+                setTimeout(() => window.location.href = 'login.html', 1500);
+                return;
+            }
+            
+            try {
+                const { response, data } = await API.startConversation(listingId, token);
+                
+                if (response.ok) {
+                    // Перенаправляем на страницу сообщений с открытым диалогом
+                    window.location.href = `messages.html?conversation=${data.id}`;
+                } else {
+                    notify.error(data.error || 'Не удалось начать диалог');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                notify.error('Не удалось начать диалог');
+            }
+        }
+
+        // Проверка авторизации для шапки
+        checkAuth();
+    </script>
+</body>
+</html>

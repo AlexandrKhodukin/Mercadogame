@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - MercadoGame</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        .container {
+            max-width: 800px;
+        }
+
+        .profile-container {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .profile-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #f7f8fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            border: 3px solid #e5e7eb;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            font-size: 80px;
+        }
+
+        .avatar-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-upload,
+        .btn-delete {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-upload {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .btn-upload:hover {
+            background: #ff5722;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-delete {
+            background: #ffffff;
+            color: #dc2626;
+            border: 2px solid #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #fef2f2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #avatar-input {
+            display: none;
+        }
+
+        .avatar-info {
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 15px;
+            max-width: 400px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .info-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            color: #1d4ed8;
+            gap: 12px;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 20px;
+            }
+
+            .avatar-preview {
+                width: 150px;
+                height: 150px;
+                font-size: 60px;
+            }
+
+            .avatar-placeholder {
+                font-size: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MercadoGame" class="logo-image">
+                <span class="logo-text">Mercado<span>Game</span></span>
+            </a>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="header-search-input"
+                    placeholder="Поиск по играм и объявлениям..."
+                    data-i18n-placeholder="search_placeholder"
+                    id="header-search"
+                >
+            </div>
+            <div id="auth-buttons" class="auth-buttons">
+                <!-- Будет заполнено через JavaScript -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Фоновое изображение -->
+    <div class="background-image"></div>
+
+    <!-- Контент -->
+    <div class="container">
+        <a href="javascript:history.back()" class="back-link">
+            ← <span data-i18n="back_link">Назад</span>
+        </a>
+
+        <div id="content">
+            <div class="loading-container">
+                <div class="loading" data-i18n="loading">Загрузка</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+        // Проверка авторизации
+        const token = getToken();
+        const user = getUser();
+
+        if (!token || !user) {
+            window.location.href = 'login.html';
+        }
+
+        let currentAvatarUrl = null;
+
+        function displayProfile() {
+            currentAvatarUrl = user.avatar;
+
+            const avatarHtml = currentAvatarUrl
+                ? `<img src="${currentAvatarUrl}" alt="Аватар">`
+                : '<div class="avatar-placeholder">👤</div>';
+
+            const memberSince = new Date(user.date_joined).toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const content = `
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <h1>Мой профиль</h1>
+                    </div>
+
+                    <div class="avatar-section">
+                        <div class="avatar-preview" id="avatar-preview">
+                            ${avatarHtml}
+                        </div>
+                        <div class="avatar-buttons">
+                            <input type="file" id="avatar-input" accept="image/jpeg,image/jpg,image/png,image/webp">
+                            <button class="btn-upload" onclick="document.getElementById('avatar-input').click()">
+                                Загрузить аватар
+                            </button>
+                            <button class="btn-delete" id="delete-avatar-btn" onclick="deleteAvatar()" ${!currentAvatarUrl ? 'disabled' : ''}>
+                                Удалить аватар
+                            </button>
+                        </div>
+                        <div class="avatar-info">
+                            Поддерживаемые форматы: JPG, PNG, WEBP. Максимальный размер: 5 МБ. Изображение будет автоматически обрезано до квадрата.
+                        </div>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="info-group">
+                            <div class="info-label" data-i18n="username">Имя пользователя</div>
+                            <div class="info-value">${user.username}</div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label" data-i18n="email">Email</div>
+                            <div class="info-value">${user.email}</div>
+                        </div>
+
+                        <div class="info-group">
+                            <div class="info-label" data-i18n="member_since">Дата регистрации</div>
+                            <div class="info-value">${memberSince}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').innerHTML = content;
+
+            // Применяем переводы
+            if (typeof updateTranslations === 'function') {
+                updateTranslations();
+            }
+
+            // Обработчик загрузки файла
+            document.getElementById('avatar-input').addEventListener('change', uploadAvatar);
+        }
+
+        async function uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Проверка размера
+            if (file.size > 5 * 1024 * 1024) {
+                notify.error('Размер файла превышает 5 МБ');
+                event.target.value = '';
+                return;
+            }
+
+            // Проверка формата
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                notify.error('Разрешены только форматы: JPG, PNG, WEBP');
+                event.target.value = '';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('avatar', file);
+
+            try {
+                const response = await fetch(`${API.BASE_URL}/profile/upload_avatar/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Обновляем данные пользователя
+                    user.avatar = data.avatar;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    currentAvatarUrl = data.avatar;
+
+                    // Обновляем отображение
+                    const avatarPreview = document.getElementById('avatar-preview');
+                    avatarPreview.innerHTML = `<img src="${data.avatar}?t=${Date.now()}" alt="Аватар">`;
+
+                    document.getElementById('delete-avatar-btn').disabled = false;
+
+                    // Обновляем аватар в шапке
+                    checkAuth();
+
+                    notify.success('Аватар успешно загружен!');
+                } else {
+                    notify.error(data.error || 'Ошибка при загрузке аватара');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                notify.error('Ошибка соединения с сервером');
+            }
+
+            event.target.value = '';
+        }
+
+        async function deleteAvatar() {
+            if (!confirm('Вы уверены, что хотите удалить аватар?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API.BASE_URL}/profile/delete_avatar/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Обновляем данные пользователя
+                    user.avatar = null;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    currentAvatarUrl = null;
+
+                    // Обновляем отображение
+                    const avatarPreview = document.getElementById('avatar-preview');
+                    avatarPreview.innerHTML = '<div class="avatar-placeholder">👤</div>';
+
+                    document.getElementById('delete-avatar-btn').disabled = true;
+
+                    notify.success('Аватар удален');
+                    // Обновляем аватар в шапке
+                    checkAuth();
+                } else {
+                    notify.error(data.error || 'Ошибка при удалении аватара');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                notify.error('Ошибка соединения с сервером');
+            }
+        }
+
+        // Инициализация
+        checkAuth();
+        displayProfile();
+    </script>
+</body>
+</html>

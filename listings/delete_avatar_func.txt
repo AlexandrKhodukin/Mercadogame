@@ -1,0 +1,18 @@
+    def delete_avatar(self):
+        """Удаляет аватар с диска и все старые файлы аватаров"""
+        if self.avatar:
+            # Удаляем текущий файл
+            if os.path.isfile(self.avatar.path):
+                os.remove(self.avatar.path)
+        
+        # Удаляем все старые файлы аватаров из папки пользователя
+        avatar_dir = os.path.join('media', 'avatars', f'user_{self.user.id}')
+        if os.path.isdir(avatar_dir):
+            for filename in os.listdir(avatar_dir):
+                if filename.startswith('avatar_'):
+                    file_path = os.path.join(avatar_dir, filename)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+        
+        self.avatar = None
+        self.save()

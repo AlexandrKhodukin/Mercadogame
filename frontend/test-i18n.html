@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест локализации</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<!-- Шапка -->
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="MercadoGame" class="logo-image">
+                <span class="logo-text">Mercado<span>Game</span></span>
+            </a>
+            <div class="header-search">
+                <input
+                    type="text"
+                    class="header-search-input"
+                    placeholder="Поиск по играм и объявлениям..."
+                    data-i18n-placeholder="search_placeholder"
+                    id="header-search"
+                >
+            </div>
+            <div id="auth-buttons" class="auth-buttons">
+                <div class="loading" data-i18n="loading">Загрузка</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Фоновое изображение -->
+    <div class="background-image"></div>
+
+    <!-- Основной контент -->
+    <div class="container">
+        <h1 data-i18n="games_catalog">Каталог игр</h1>
+        <p data-i18n="select_game">Выберите игру для просмотра объявлений</p>
+
+        <div style="margin-top: 40px;">
+            <h2>Тестовые переводы:</h2>
+            <ul style="line-height: 2;">
+                <li><span data-i18n="login">Войти</span></li>
+                <li><span data-i18n="register">Регистрация</span></li>
+                <li><span data-i18n="my_listings">Мои объявления</span></li>
+                <li><span data-i18n="create_listing">Создать объявление</span></li>
+                <li><span data-i18n="logout">Выйти</span></li>
+                <li><span data-i18n="filters">Фильтры</span></li>
+                <li><span data-i18n="sort_by">Сортировка</span></li>
+                <li><span data-i18n="price_from">Цена от</span></li>
+                <li><span data-i18n="apply">Применить</span></li>
+                <li><span data-i18n="reset">Сбросить</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/i18n.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Инициализация шапки
+        checkAuth();
+    </script>
+</body>
+</html>

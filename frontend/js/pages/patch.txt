@@ -1,0 +1,14 @@
+174a175,187
+> 
+> /**
+>  * Генерирует HTML для аватара продавца
+>  * @param {string|null} avatarUrl - URL аватара или null
+>  * @param {string} className - CSS класс для аватара
+>  * @returns {string} HTML для аватара
+>  */
+> function getSellerAvatarHtml(avatarUrl, className = "seller-avatar") {
+>     if (avatarUrl) {
+>         return `<div class="${className}"><img src="${avatarUrl}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>`;
+>     }
+>     return `<div class="${className}">👤</div>`;
+> }

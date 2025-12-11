@@ -1,0 +1,964 @@
+/* Общие стили для всего сайта */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #ffffff;
+    color: #1f2937;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Фоновое изображение - круглое по центру на десктопе */
+.background-image {
+    position: fixed;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 500px;
+    background: url('../images/backgrounds/background.jpg') center center / cover no-repeat;
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 1.0;
+    pointer-events: none;
+}
+
+/* Скрываем фоновую картинку на страницах авторизации */
+body.auth-page .background-image {
+    display: none;
+}
+
+/* Шапка */
+header {
+    background: #ffffff;
+    padding: 15px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff6b35;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ff6b35;
+    display: flex;
+    align-items: center;
+}
+
+.logo-text span {
+    color: #2563eb;
+}
+
+/* Поиск в хедере */
+.header-search {
+    flex: 1;
+    max-width: 600px;
+}
+
+.header-search-input {
+    width: 100%;
+    padding: 12px 20px;
+    background: #f7f8fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    color: #1f2937;
+    font-size: 15px;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.header-search-input:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.header-search-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Переключатель языков */
+.language-switcher {
+    position: relative;
+}
+
+.language-button {
+    width: 48px;
+    height: 48px;
+    background: #f7f8fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1f2937;
+    font-size: 20px;
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.3s;
+    line-height: 0.85;
+    text-align: center;
+}
+
+.language-button:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    transform: scale(1.05);
+}
+
+.language-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    padding: 8px;
+    display: none;
+    z-index: 1000;
+    border: 1px solid #e5e7eb;
+}
+
+.language-dropdown.active {
+    display: block;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: #1f2937;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.language-option:hover {
+    background: #f7f8fa;
+    color: #2563eb;
+}
+
+.language-option.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.language-option .flag {
+    font-size: 20px;
+}
+
+/* Контейнер для кнопок авторизации и языков */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Гамбургер-меню для мобильных */
+.mobile-menu-button {
+    display: none;
+    width: 40px;
+    height: 40px;
+    background: #f7f8fa;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s;
+}
+
+.mobile-menu-button:hover {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.mobile-menu-button span {
+    width: 20px;
+    height: 2px;
+    background: #1f2937;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.mobile-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 220px;
+    padding: 8px;
+    z-index: 1000;
+    border: 1px solid #e5e7eb;
+}
+
+.mobile-menu-dropdown.active {
+    display: block;
+}
+
+.mobile-menu-item {
+    display: block;
+    padding: 12px 16px;
+    color: #1f2937;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.mobile-menu-item:hover {
+    background: #f7f8fa;
+    color: #ff6b35;
+}
+
+.mobile-menu-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.mobile-menu-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 8px 0;
+}
+
+/* Кнопки */
+.btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: #ff6b35;
+    color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:hover {
+    background: #ff8555;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+}
+
+.btn-secondary:hover {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.back-btn {
+    padding: 10px 20px;
+    background: #f7f8fa;
+    color: #1f2937;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.back-btn:hover {
+    background: #e5e7eb;
+    color: #ff6b35;
+}
+
+/* Контейнер */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Загрузка */
+.loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+    font-size: 18px;
+}
+
+.loading::after {
+    content: '...';
+    animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+}
+
+/* Пустое состояние */
+.empty {
+    text-align: center;
+    padding: 80px 20px;
+    color: #9ca3af;
+}
+
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+}
+
+.empty-text {
+    font-size: 18px;
+}
+
+/* Бейджи категорий */
+.category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.category-account {
+    background: #10b981;
+    color: white;
+}
+
+.category-service {
+    background: #2563eb;
+    color: white;
+}
+
+.category-currency {
+    background: #f59e0b;
+    color: white;
+}
+
+/* Заголовок страницы */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #1f2937;
+    text-align: center;
+}
+
+.section-subtitle {
+    color: #1f2937;
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Аватарка пользователя */
+.user-avatar-container {
+    position: relative;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    background: #f7f8fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b35;
+    font-size: 24px;
+    border: 2px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.user-avatar:hover {
+    border-color: #cbd5e1;
+    background: #f7f8fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+}
+
+/* Бейдж непрочитанных сообщений */
+.unread-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #ef4444;
+    color: white;
+    border-radius: 12px;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 6px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+/* Выпадающее меню */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    padding: 8px;
+    display: none;
+    z-index: 1000;
+    border: 1px solid #e5e7eb;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 16px;
+    color: #1f2937;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background: #f7f8fa;
+    color: #ff6b35;
+}
+
+.dropdown-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 8px 0;
+}
+
+/* Стили для результатов поиска - игры */
+.search-games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.search-game-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-game-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+}
+
+.search-game-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff6b35, #ff8555);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+    flex-shrink: 0;
+}
+
+.search-game-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Шапка таблицы объявлений */
+.listings-header {
+    display: grid;
+    grid-template-columns: 80px 200px 1fr 180px 120px;
+    gap: 20px;
+    padding: 12px 16px;
+    background: #f7f8fa;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #e5e7eb;
+}
+
+.header-cell {
+    font-weight: 700;
+    font-size: 13px;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-cell-sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s;
+}
+
+.header-cell-sortable:hover {
+    color: #1d4ed8;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    font-size: 10px;
+    color: #9ca3af;
+    opacity: 0.3;
+}
+
+/* Список объявлений */
+.listings {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* Карточка объявления */
+.listing-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s;
+    border: 1px solid #e5e7eb;
+    display: grid;
+    grid-template-columns: 80px 200px 1fr auto auto;
+    gap: 15px;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.listing-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transform: translateY(-2px);
+}
+
+/* Номер сервера */
+.listing-server {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    text-align: left;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+/* Название */
+.listing-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+}
+
+.listing-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.listing-category-badge {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Описание посередине */
+.listing-description {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    max-height: 63px; /* 14px * 1.5 * 3 = 63px для точно 3 строк */
+    min-height: 63px; /* Фиксированная высота для всех карточек */
+}
+
+/* Продавец */
+.listing-seller-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+    max-width: none;
+    cursor: pointer;
+    padding: 8px;
+    margin: -8px;
+    border-radius: 8px;
+    transition: all 0.3s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.listing-seller-section:hover {
+    background: #f7f8fa;
+}
+
+.listing-seller-section:hover .seller-avatar {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+.listing-seller-section:hover .listing-seller-name {
+    color: #2563eb;
+}
+
+.seller-avatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    background: #f7f8fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 20px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s;
+}
+
+.listing-seller-name {
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    transition: all 0.3s;
+    min-width: 0;
+}
+
+/* Цена справа */
+.listing-price-section {
+    text-align: right;
+    width: auto;
+    min-width: 80px;
+}
+
+.listing-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff6b35;
+    white-space: nowrap;
+}
+
+/* Адаптивность для планшетов и мобильных */
+@media (max-width: 1024px) {
+    .header-content {
+        padding: 0 30px;
+    }
+
+    .container {
+        padding: 30px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Фоновое изображение - статичное по центру на мобильных */
+    .background-image {
+        position: static;
+        width: 300px;
+        height: 300px;
+        opacity: 1.0;
+        margin: 20px auto;
+        transform: none;
+        left: auto;
+        top: auto;
+    }
+
+    /* Контент идет сразу под картинкой */
+    .container {
+        padding-top: 10px;
+    }
+
+    .header-content {
+        padding: 0 15px;
+        flex-wrap: nowrap;
+        gap: 12px;
+    }
+
+    /* Логотип - только картинка без текста */
+    header .logo {
+        flex-shrink: 0;
+    }
+
+    header .logo-image {
+        height: 48px;
+    }
+
+    header .logo-text {
+        display: none;
+    }
+
+    /* Поисковая строка по центру */
+    .header-search {
+        flex: 1;
+        max-width: none;
+    }
+
+    .header-search-input {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    /* Скрываем обычные кнопки авторизации и язык на мобильных */
+    .auth-buttons .btn,
+    .auth-buttons .language-switcher {
+        display: none;
+    }
+
+    /* Показываем гамбургер-меню для неавторизованных */
+    .auth-buttons .mobile-menu-button {
+        display: flex;
+    }
+
+    /* Аватар пользователя остается видимым */
+    .auth-buttons .user-avatar-container {
+        display: block;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    /* Показываем переключатель языка в меню профиля на мобильных */
+    .mobile-language-label,
+    .mobile-language-option,
+    .mobile-language-divider {
+        display: block !important;
+    }
+
+    .language-button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .container {
+        padding: 20px 15px;
+    }
+
+    /* Адаптивность результатов поиска на мобильных */
+    .search-games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Скрываем шапку таблицы на мобильных */
+    .listings-header {
+        display: none !important;
+    }
+
+    /* Карточки объявлений: FunPay-стиль на мобильных */
+    .listing-card {
+        display: block;
+        padding: 15px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Первая строка: название сервера (маленький бейдж вверху) */
+    .listing-server {
+        display: inline-block;
+        text-align: left;
+        padding: 4px 8px;
+        background: #f7f8fa;
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+        font-size: 11px;
+        color: #6b7280;
+        word-break: break-word;
+        margin-bottom: 8px;
+    }
+
+    /* Показываем блок info - название товара */
+    .listing-info {
+        display: block !important;
+        text-align: left;
+        min-width: unset;
+        max-width: 100%;
+        margin-bottom: 12px;
+    }
+
+    .listing-title {
+        font-size: 16px;
+        color: #1f2937;
+        font-weight: 600;
+        margin: 0;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+
+    .listing-category-badge {
+        display: none; /* Скрываем категорию на мобильных */
+    }
+
+    /* Скрываем описание на мобильных */
+    .listing-description {
+        display: none !important;
+    }
+
+    /* Нижняя строка: контейнер для цены и аватарки */
+    .listing-price-section {
+        display: inline-block !important;
+        text-align: left;
+        padding: 0;
+        vertical-align: middle;
+    }
+
+    .listing-price {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ff6b35;
+        white-space: nowrap;
+    }
+
+    .listing-seller-section {
+        display: inline-flex !important;
+        width: auto;
+        max-width: none;
+        justify-content: flex-end;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+        float: right;
+        vertical-align: middle;
+    }
+
+    .listing-seller-name {
+        display: none; /* Только аватарка на мобильных */
+    }
+
+    .seller-avatar {
+        font-size: 36px;
+        line-height: 1;
+    }
+}
