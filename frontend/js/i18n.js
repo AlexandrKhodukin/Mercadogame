@@ -94,6 +94,8 @@ const translations = {
         'login_link': 'Войти',
         'username_hint': 'От 3 до 20 символов',
         'password_hint': 'Минимум 4 символа',
+        'google_login': 'Войти через Google',
+        'google_register': 'Зарегистрироваться через Google',
 
         // Создание объявления
         'create_listing_title': 'Создать объявление',
@@ -250,6 +252,8 @@ const translations = {
         'login_link': 'Entrar',
         'username_hint': 'De 3 a 20 caracteres',
         'password_hint': 'Mínimo 4 caracteres',
+        'google_login': 'Entrar com Google',
+        'google_register': 'Registrar com Google',
 
         // Criar anúncio
         'create_listing_title': 'Criar anúncio',

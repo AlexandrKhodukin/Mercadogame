@@ -212,6 +212,41 @@ input::placeholder {
     }
 }
 
+/* Кнопка Google OAuth */
+.google-btn {
+    width: 100%;
+    padding: 14px;
+    background: #ffffff;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.google-btn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.social-login {
+    margin-top: 20px;
+}
+
 @media (max-width: 480px) {
     .login-container,
     .register-container {
