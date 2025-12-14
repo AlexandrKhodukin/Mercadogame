@@ -114,40 +114,49 @@ python manage.py collectstatic --noinput
 
 ---
 
-## Шаг 4: Настройка Django Admin
+## Шаг 4: Автоматическая настройка Google OAuth
 
-### 4.1. Создайте суперпользователя (если еще не создан)
+### 4.1. Обновите информацию о сайте
 
 ```bash
-python manage.py createsuperuser
+python manage.py update_site
 ```
 
-### 4.2. Откройте Django Admin
+Эта команда автоматически обновит домен на `mercadogame.ru`
 
-Перейдите на: `https://mercadogame.ru/admin/`
+### 4.2. Настройте Google OAuth
 
-Войдите с credentials суперпользователя
+```bash
+python manage.py setup_google_oauth
+```
 
-### 4.3. Настройте Sites
+Эта команда автоматически:
+- Создаст или обновит Google Social Application
+- Настроит Client ID и Secret из .env файла
+- Привяжет приложение к сайту mercadogame.ru
 
-1. Перейдите в **Sites**
-2. Кликните на существующий site (обычно "example.com")
-3. Измените:
-   - **Domain name:** `mercadogame.ru`
-   - **Display name:** `MercadoGame`
-4. Нажмите **Save**
+Вы должны увидеть:
+```
+[OK] Google OAuth приложение обновлено
+=== Google OAuth успешно настроен! ===
+Client ID: ваш_client_id
+Сайт: mercadogame.ru
+```
 
-### 4.4. Создайте Social Application
+### 4.3. (Опционально) Проверьте через Django Admin
 
-1. Перейдите в **Social applications**
-2. Нажмите **Add social application**
-3. Заполните форму:
-   - **Provider:** `Google`
-   - **Name:** `Google OAuth Production`
-   - **Client id:** ваш production Client ID из Google Console
-   - **Secret key:** ваш production Client Secret
-   - **Sites:** Переместите `mercadogame.ru` из "Available sites" в "Chosen sites"
-4. Нажмите **Save**
+Если хотите убедиться, что все настроено:
+
+1. Создайте суперпользователя (если еще нет):
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+2. Откройте: `https://mercadogame.ru/admin/`
+
+3. Проверьте:
+   - **Sites** → должен быть `mercadogame.ru`
+   - **Social applications** → должно быть приложение Google с вашими credentials
 
 ---
 
