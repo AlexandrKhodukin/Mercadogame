@@ -209,6 +209,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'  # 'mandatory', 'optional' или 'none'
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
+# Кастомные адаптеры для allauth
+ACCOUNT_ADAPTER = 'listings.adapters.CustomAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'listings.adapters.CustomSocialAccountAdapter'
+
 # Настройки для Google OAuth
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

@@ -245,5 +245,60 @@ function requireAuth() {
     return true;
 }
 
+// Обработка OAuth callback (получение токена из URL)
+function handleOAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userId = urlParams.get('user_id');
+    const username = urlParams.get('username');
+
+    if (token && userId) {
+        // Сохраняем токен
+        localStorage.setItem('token', token);
+
+        // Получаем полные данные пользователя с сервера
+        fetch(`/api/users/${userId}/`, {
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(user => {
+            // Сохраняем полные данные пользователя
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // Показываем уведомление
+            if (typeof notify !== 'undefined') {
+                notify.success('Вы успешно вошли через Google!');
+            }
+
+            // Очищаем URL от параметров и перезагружаем страницу
+            window.history.replaceState({}, document.title, window.location.pathname);
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Ошибка получения данных пользователя:', error);
+
+            // Если не удалось получить данные, сохраняем минимальные данные
+            const userData = {
+                id: userId,
+                username: username || `user_${userId}`
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
+
+            // Очищаем URL от параметров и перезагружаем страницу
+            window.history.replaceState({}, document.title, window.location.pathname);
+            window.location.reload();
+        });
+    }
+}
+
+// Вызываем обработчик при загрузке страницы
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', handleOAuthCallback);
+} else {
+    handleOAuthCallback();
+}
+
 // Экспорт функции для использования в других скриптах
 window.updateUnreadCount = updateUnreadCount;
